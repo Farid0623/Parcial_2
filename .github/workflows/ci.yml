@@ -42,14 +42,14 @@ jobs:
         
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: test-results
         path: target/surefire-reports/
         
     - name: Upload coverage reports
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-report
         path: target/site/jacoco/
@@ -83,7 +83,7 @@ jobs:
       
     - name: Upload Checkstyle results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: checkstyle-results
         path: target/checkstyle-result.xml
@@ -112,7 +112,7 @@ jobs:
       run: mvn package -DskipTests -B
       
     - name: Upload JAR artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: application-jar
         path: target/*.jar
