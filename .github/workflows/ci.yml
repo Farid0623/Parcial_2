@@ -10,6 +10,9 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     
     steps:
     - name: Checkout code
@@ -54,6 +57,9 @@ jobs:
   code-quality:
     name: Code Quality Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     needs: build-and-test
     
     steps:
@@ -86,6 +92,8 @@ jobs:
   package:
     name: Package Application
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-and-test, code-quality]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
