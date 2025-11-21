@@ -96,7 +96,7 @@ jobs:
         checkstyle_config: checkstyle.xml
         
     - name: Add PR labels
-      uses: actions/labeler@v5
+      uses: actions/labeler@v6
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
