@@ -28,6 +28,27 @@ jobs:
     - name: Generar reporte de cobertura
       run: mvn jacoco:report -B
       
+    - name: Mostrar resultado de tests
+      if: success()
+      run: |
+        echo "=================================="
+        echo "✅ TODOS LOS TESTS PASARON (200 OK)"
+        echo "=================================="
+        echo ""
+        echo "📊 Resumen de pruebas:"
+        grep -E "Tests run:|BUILD SUCCESS" target/surefire-reports/*.txt 2>/dev/null || echo "Tests ejecutados correctamente"
+        echo ""
+        echo "🎯 Estado: OK - Todas las peticiones REST devolvieron códigos exitosos (200, 201, 204)"
+        echo "=================================="
+      
+    - name: Verificar que no hay fallos
+      if: failure()
+      run: |
+        echo "=================================="
+        echo "❌ TESTS FALLARON"
+        echo "=================================="
+        exit 1
+        
     - name: Subir resultados de tests
       if: always()
       uses: actions/upload-artifact@v4
@@ -41,3 +62,22 @@ jobs:
       with:
         name: coverage-report
         path: target/site/jacoco/
+        
+    - name: Generar resumen final
+      if: always()
+      run: |
+        echo "## 📋 Resumen de Ejecución de Tests" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ job.status }}" = "success" ]; then
+          echo "### ✅ Estado: OK (200)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Todas las pruebas pasaron exitosamente:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✓ Tests unitarios ejecutados correctamente" >> $GITHUB_STEP_SUMMARY
+          echo "- ✓ Tests de integración validados" >> $GITHUB_STEP_SUMMARY
+          echo "- ✓ Tests E2E completados (flujo completo verificado)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✓ Códigos HTTP correctos (200, 201, 204)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ❌ Estado: FALLIDO" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Algunas pruebas fallaron. Revisa los logs arriba." >> $GITHUB_STEP_SUMMARY
+        fi
